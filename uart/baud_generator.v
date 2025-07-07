@@ -1,6 +1,6 @@
 module baud_generator #(
-    parameter CLOCK_FREQ = 50000000,
-    parameter BAUD_RATE  = 9600
+    parameter CLOCK_FREQ = 16000,
+    parameter BAUD_RATE  = 100    // Using 100 baud for simulation ease
 )(
     input  clk,
     input  reset,
@@ -8,7 +8,7 @@ module baud_generator #(
 );
 
     localparam BAUD_DIV = CLOCK_FREQ / BAUD_RATE;
-    reg [12:0] counter;
+    reg [$clog2(BAUD_DIV)-1:0] counter;
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -24,5 +24,4 @@ module baud_generator #(
             end
         end
     end
-
 endmodule
