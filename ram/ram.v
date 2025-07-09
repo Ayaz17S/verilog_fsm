@@ -1,27 +1,22 @@
-module ram(
-    input [9:0] addr,
-    inout [7:0] data,
+module ram (
     input clk,
+    input cs,
     input rd,
     input wr,
-    input cs
+    input [7:0] addr,
+    inout [7:0] data
 );
 
-    reg [7:0] mem [0:1023];
-    reg [7:0] data_out;
-    reg data_drive;
+reg [7:0] mem [0:255];
+reg [7:0] data_out;
 
-    assign data = (cs && rd && !wr && data_drive) ? data_out : 8'bz;
+assign data = (cs && rd) ? data_out : 8'bz;
 
-    always @(posedge clk) begin
-        if (cs && wr && !rd) begin
-            mem[addr] <= data;
-        end
-        if (cs && rd && !wr) begin
-            data_out <= mem[addr];
-            data_drive <= 1;
-        end else begin
-            data_drive <= 0;
-        end
-    end
+always @(posedge clk) begin
+    if (cs && wr && !rd)
+        mem[addr] <= data;
+    else if (cs && rd && !wr)
+        data_out <= mem[addr];
+end
+
 endmodule
